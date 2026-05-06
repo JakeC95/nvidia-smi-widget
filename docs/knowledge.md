@@ -5,6 +5,8 @@
 - Target desktop: KDE Plasma 5.
 - Target package type: Plasma 5 applet installed with `kpackagetool5`.
 - Widget id: `com.github.jakec95.nvidia-smi-vram`.
+- End-user install path is public GitHub clone or copied repo archive, followed by `bash scripts/install.sh`.
+- Users add it from Plasma's widget picker as `NVIDIA VRAM`.
 
 ## Runtime Behavior
 

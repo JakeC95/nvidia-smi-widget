@@ -14,13 +14,35 @@ The widget renders the ring with `QtQuick.Shapes` instead of a manual canvas rep
 
 ## Install
 
+On another Rocky Linux/KDE machine, install from GitHub:
+
 ```bash
 git clone https://github.com/JakeC95/nvidia-smi-widget.git
 cd nvidia-smi-widget
 bash scripts/install.sh
 ```
 
-Then add `NVIDIA VRAM` from the Plasma widget picker.
+Then add the widget:
+
+1. Right-click the panel or desktop.
+2. Choose **Add Widgets**.
+3. Search for **NVIDIA VRAM**.
+4. Add it to the panel.
+
+If the machine cannot access GitHub, download or copy this repository as a zip/tar folder, extract it, then run:
+
+```bash
+cd nvidia-smi-widget
+bash scripts/install.sh
+```
+
+To update an existing install:
+
+```bash
+cd nvidia-smi-widget
+git pull
+bash scripts/install.sh
+```
 
 ## Configure
 
