@@ -29,11 +29,9 @@ Item {
     implicitWidth: Layout.preferredWidth
     implicitHeight: Layout.preferredHeight
 
-    Plasmoid.preferredRepresentation: Plasmoid.compactRepresentation
-    Plasmoid.compactRepresentation: monitorRepresentation
-    Plasmoid.fullRepresentation: monitorRepresentation
+    Plasmoid.preferredRepresentation: Plasmoid.fullRepresentation
     Plasmoid.backgroundHints: PlasmaCore.Types.NoBackground
-    Plasmoid.toolTipMainText: "NVIDIA VRAM"
+    Plasmoid.title: "NVIDIA VRAM"
     Plasmoid.toolTipSubText: root.tooltipText()
 
     function tooltipText() {
@@ -52,6 +50,7 @@ Item {
             hasReading = false;
             errorText = stderr && stderr.length > 0 ? stderr.trim() : "nvidia-smi failed";
             percent = 0;
+            ring.requestPaint();
             return;
         }
 
@@ -60,6 +59,7 @@ Item {
             hasReading = false;
             errorText = "Unexpected nvidia-smi output";
             percent = 0;
+            ring.requestPaint();
             return;
         }
 
@@ -69,12 +69,14 @@ Item {
             hasReading = false;
             errorText = "Invalid nvidia-smi memory values";
             percent = 0;
+            ring.requestPaint();
             return;
         }
 
         hasReading = true;
         errorText = "";
         percent = Math.max(0, Math.min(100, usedMiB * 100 / totalMiB));
+        ring.requestPaint();
     }
 
     PlasmaCore.DataSource {
@@ -100,87 +102,64 @@ Item {
         onTriggered: executable.run()
     }
 
-    Component {
-        id: monitorRepresentation
+    Canvas {
+        id: ring
+        anchors.fill: parent
+        antialiasing: true
 
-        Item {
-            id: monitor
+        onWidthChanged: requestPaint()
+        onHeightChanged: requestPaint()
 
-            Layout.minimumWidth: PlasmaCore.Units.iconSizes.small
-            Layout.minimumHeight: PlasmaCore.Units.iconSizes.small
-            Layout.preferredWidth: root.inPanel ? root.panelExtent : PlasmaCore.Units.gridUnit * 2.4
-            Layout.preferredHeight: root.inPanel ? root.panelExtent : PlasmaCore.Units.gridUnit * 2.4
-            Layout.maximumWidth: root.inPanel ? root.panelExtent : -1
-            Layout.maximumHeight: root.inPanel ? root.panelExtent : -1
-            implicitWidth: Layout.preferredWidth
-            implicitHeight: Layout.preferredHeight
-
-            Canvas {
-                id: ring
-                anchors.fill: parent
-                antialiasing: true
-
-                onWidthChanged: requestPaint()
-                onHeightChanged: requestPaint()
-
-                Connections {
-                    target: root
-                    function onPercentChanged() { ring.requestPaint(); }
-                    function onHasReadingChanged() { ring.requestPaint(); }
-                }
-
-                onPaint: {
-                    var ctx = getContext("2d");
-                    var size = Math.min(width, height);
-                    ctx.clearRect(0, 0, width, height);
-                    if (size < 4) {
-                        return;
-                    }
-                    var centerX = width / 2;
-                    var centerY = height / 2;
-                    var stroke = Math.max(3, size * 0.08);
-                    var radius = (size - stroke) / 2 - 1;
-                    if (radius <= 0) {
-                        return;
-                    }
-                    var start = Math.PI * 0.72;
-                    var sweep = Math.PI * 1.56;
-
-                    ctx.lineCap = "round";
-                    ctx.lineWidth = stroke;
-
-                    ctx.beginPath();
-                    ctx.strokeStyle = Qt.rgba(1, 1, 1, 0.14);
-                    ctx.arc(centerX, centerY, radius, start, start + sweep, false);
-                    ctx.stroke();
-
-                    if (root.hasReading && root.percent > 0) {
-                        ctx.beginPath();
-                        ctx.strokeStyle = "#20aeea";
-                        ctx.arc(centerX, centerY, radius, start, start + sweep * (root.percent / 100), false);
-                        ctx.stroke();
-                    }
-                }
+        onPaint: {
+            var ctx = getContext("2d");
+            var size = Math.min(width, height);
+            ctx.clearRect(0, 0, width, height);
+            if (size < 4) {
+                return;
             }
-
-            Text {
-                anchors.centerIn: parent
-                width: parent.width * 0.82
-                text: root.hasReading ? root.percent.toFixed(1) + "%" : "--%"
-                color: "#f4f7f9"
-                horizontalAlignment: Text.AlignHCenter
-                verticalAlignment: Text.AlignVCenter
-                elide: Text.ElideRight
-                font.pixelSize: Math.max(8, Math.min(parent.width, parent.height) * 0.23)
-                font.bold: false
+            var centerX = width / 2;
+            var centerY = height / 2;
+            var stroke = Math.max(3, size * 0.08);
+            var radius = (size - stroke) / 2 - 1;
+            if (radius <= 0) {
+                return;
             }
+            var start = Math.PI * 0.72;
+            var sweep = Math.PI * 1.56;
 
-            PlasmaCore.ToolTipArea {
-                anchors.fill: parent
-                mainText: "NVIDIA VRAM"
-                subText: root.tooltipText()
-                textFormat: Text.PlainText
+            ctx.lineCap = "round";
+            ctx.lineWidth = stroke;
+
+            ctx.beginPath();
+            ctx.strokeStyle = Qt.rgba(1, 1, 1, 0.14);
+            ctx.arc(centerX, centerY, radius, start, start + sweep, false);
+            ctx.stroke();
+
+            if (root.hasReading && root.percent > 0) {
+                ctx.beginPath();
+                ctx.strokeStyle = "#20aeea";
+                ctx.arc(centerX, centerY, radius, start, start + sweep * (root.percent / 100), false);
+                ctx.stroke();
             }
         }
+    }
+
+    Text {
+        anchors.centerIn: parent
+        width: parent.width * 0.82
+        text: root.hasReading ? root.percent.toFixed(1) + "%" : "--%"
+        color: "#f4f7f9"
+        horizontalAlignment: Text.AlignHCenter
+        verticalAlignment: Text.AlignVCenter
+        elide: Text.ElideRight
+        font.pixelSize: Math.max(8, Math.min(parent.width, parent.height) * 0.23)
+        font.bold: false
+    }
+
+    PlasmaCore.ToolTipArea {
+        anchors.fill: parent
+        mainText: "NVIDIA VRAM"
+        subText: root.tooltipText()
+        textFormat: Text.PlainText
     }
 }
