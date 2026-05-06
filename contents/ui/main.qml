@@ -119,7 +119,7 @@ Item {
             }
             var centerX = width / 2;
             var centerY = height / 2;
-            var stroke = Math.max(3, size * 0.08);
+            var stroke = Math.max(5, size * 0.14);
             var radius = (size - stroke) / 2 - 1;
             if (radius <= 0) {
                 return;
@@ -137,7 +137,7 @@ Item {
 
             if (root.hasReading && root.percent > 0) {
                 ctx.beginPath();
-                ctx.strokeStyle = "#20aeea";
+                ctx.strokeStyle = "#76B900";
                 ctx.arc(centerX, centerY, radius, start, start + sweep * (root.percent / 100), false);
                 ctx.stroke();
             }
