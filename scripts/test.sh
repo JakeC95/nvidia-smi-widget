@@ -4,6 +4,7 @@ set -euo pipefail
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 
 required=(
+    "$ROOT/metadata.json"
     "$ROOT/metadata.desktop"
     "$ROOT/contents/ui/main.qml"
 )
@@ -17,6 +18,9 @@ done
 
 grep -q "X-KDE-PluginInfo-Name=com.github.jakec95.nvidia-smi-vram" "$ROOT/metadata.desktop"
 grep -q "X-Plasma-MainScript=ui/main.qml" "$ROOT/metadata.desktop"
+grep -q '"Id": "com.github.jakec95.nvidia-smi-vram"' "$ROOT/metadata.json"
+grep -q '"ExternalScripts"' "$ROOT/metadata.json"
+python3 -m json.tool "$ROOT/metadata.json" >/dev/null
 grep -q "nvidia-smi --query-gpu=memory.used,memory.total" "$ROOT/contents/ui/main.qml"
 grep -q "interval: 5000" "$ROOT/contents/ui/main.qml"
 

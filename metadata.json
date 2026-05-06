@@ -1,0 +1,26 @@
+{
+    "KPlugin": {
+        "Authors": [
+            {
+                "Name": "JakeC95"
+            }
+        ],
+        "Category": "System Information",
+        "Description": "Live GPU memory usage for NVIDIA GPUs",
+        "EnabledByDefault": true,
+        "Icon": "video-display",
+        "Id": "com.github.jakec95.nvidia-smi-vram",
+        "License": "MIT",
+        "Name": "NVIDIA VRAM",
+        "ServiceTypes": [
+            "Plasma/Applet"
+        ],
+        "Version": "0.1.1",
+        "Website": "https://github.com/JakeC95/nvidia-smi-widget"
+    },
+    "X-Plasma-API": "declarativeappletscript",
+    "X-Plasma-MainScript": "ui/main.qml",
+    "X-Plasma-RequiredExtensions": [
+        "ExternalScripts"
+    ]
+}

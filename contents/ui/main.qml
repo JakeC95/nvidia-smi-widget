@@ -16,6 +16,8 @@ Item {
     Layout.minimumHeight: PlasmaCore.Units.gridUnit * 2
     Layout.preferredWidth: PlasmaCore.Units.gridUnit * 2.4
     Layout.preferredHeight: PlasmaCore.Units.gridUnit * 2.4
+    implicitWidth: PlasmaCore.Units.gridUnit * 2.4
+    implicitHeight: PlasmaCore.Units.gridUnit * 2.4
 
     Plasmoid.preferredRepresentation: Plasmoid.fullRepresentation
     Plasmoid.toolTipMainText: "NVIDIA VRAM"
@@ -97,14 +99,20 @@ Item {
         onPaint: {
             var ctx = getContext("2d");
             var size = Math.min(width, height);
+            ctx.clearRect(0, 0, width, height);
+            if (size < 4) {
+                return;
+            }
             var centerX = width / 2;
             var centerY = height / 2;
             var stroke = Math.max(3, size * 0.08);
             var radius = (size - stroke) / 2 - 1;
+            if (radius <= 0) {
+                return;
+            }
             var start = Math.PI * 0.72;
             var sweep = Math.PI * 1.56;
 
-            ctx.clearRect(0, 0, width, height);
             ctx.lineCap = "round";
             ctx.lineWidth = stroke;
 
