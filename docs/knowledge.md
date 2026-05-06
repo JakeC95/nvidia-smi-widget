@@ -17,7 +17,7 @@
 - Displays the VRAM percentage in the center of a circular panel indicator.
 - Uses NVIDIA green `#76B900` for the active ring and a thicker stroke than the first implementation.
 - Uses a polling guard so overlapping `nvidia-smi` executable requests are not started if a previous request has not returned.
-- Exposes Plasma settings for ring color, poll interval, and rounded-vs-decimal percentage display.
+- Exposes Plasma settings for ring color, poll interval, rounded-vs-decimal percentage display, and percentage text scale.
 
 ## Plasma Edit-Mode Stability
 

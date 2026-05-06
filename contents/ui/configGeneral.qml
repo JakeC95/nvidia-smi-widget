@@ -8,6 +8,7 @@ Item {
     property alias cfg_accentColor: accentColorField.text
     property alias cfg_pollIntervalSeconds: pollIntervalSpin.value
     property alias cfg_roundPercent: roundPercentCheck.checked
+    property alias cfg_textScale: textScaleSlider.value
 
     implicitWidth: layout.implicitWidth
     implicitHeight: layout.implicitHeight
@@ -74,6 +75,30 @@ Item {
         Controls.CheckBox {
             id: roundPercentCheck
             text: "Round percentage to whole number"
+        }
+
+        RowLayout {
+            Layout.fillWidth: true
+            spacing: 12
+
+            Controls.Label {
+                text: "Text size"
+            }
+
+            Controls.Slider {
+                id: textScaleSlider
+                Layout.fillWidth: true
+                from: 1.0
+                to: 1.5
+                stepSize: 0.05
+                snapMode: Controls.Slider.SnapAlways
+            }
+
+            Controls.Label {
+                text: textScaleSlider.value.toFixed(2) + "x"
+                horizontalAlignment: Text.AlignRight
+                Layout.minimumWidth: 48
+            }
         }
     }
 }

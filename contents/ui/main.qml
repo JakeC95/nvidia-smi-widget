@@ -10,6 +10,7 @@ Item {
     readonly property string defaultAccentColor: "#76B900"
     readonly property string configuredAccentColor: /^#[0-9A-Fa-f]{6}$/.test(Plasmoid.configuration.accentColor) ? Plasmoid.configuration.accentColor : defaultAccentColor
     readonly property int pollIntervalSeconds: Math.max(1, Math.min(3600, parseInt(Plasmoid.configuration.pollIntervalSeconds, 10) || 5))
+    readonly property real textScale: Math.max(1.0, Math.min(1.5, parseFloat(Plasmoid.configuration.textScale) || 1.25))
     readonly property string command: "nvidia-smi --query-gpu=memory.used,memory.total --format=csv,noheader,nounits -i 0"
     readonly property bool inPanel: [
         PlasmaCore.Types.TopEdge,
@@ -174,7 +175,7 @@ Item {
         horizontalAlignment: Text.AlignHCenter
         verticalAlignment: Text.AlignVCenter
         elide: Text.ElideRight
-        font.pixelSize: Math.max(8, Math.min(parent.width, parent.height) * 0.23)
+        font.pixelSize: Math.max(8, Math.min(parent.width, parent.height) * 0.23 * root.textScale)
         font.bold: false
     }
 

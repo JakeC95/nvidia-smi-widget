@@ -29,6 +29,7 @@ Right-click the widget and open its settings to change:
 - Ring color, as a hex color such as `#76B900`
 - Poll interval, from 1 second to 3600 seconds
 - Percentage display, either one decimal place or rounded to the nearest whole number
+- Percentage text size, from `1.0x` to `1.5x`; the default is `1.25x`
 
 If Plasma does not refresh the widget list immediately:
 
