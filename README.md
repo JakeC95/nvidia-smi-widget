@@ -8,7 +8,9 @@ It polls:
 nvidia-smi --query-gpu=memory.used,memory.total --format=csv,noheader,nounits -i 0
 ```
 
-The center label shows the VRAM percentage. The Plasma tooltip shows the absolute `used MiB / total MiB` reading or the latest `nvidia-smi` error.
+The center label shows the VRAM percentage. The ring uses NVIDIA green (`#76B900`) so it is visually distinct from Rocky/Plasma's native blue CPU and RAM widgets.
+
+The widget renders the ring with `QtQuick.Shapes` instead of a `Canvas`. This matters on Plasma 5.27: the earlier Canvas-based version could destabilize Plasma edit mode when right-clicking the panel or opening widget rearrange mode. The current Shape-based version has been verified on `ws62` not to crash when entering edit mode.
 
 ## Install
 
@@ -46,3 +48,4 @@ bash scripts/uninstall.sh
 - Target GPU: GPU 0.
 - Refresh interval: 5 seconds.
 - Runtime dependencies: Plasma 5, `kpackagetool5` for install, and NVIDIA's `nvidia-smi`.
+- Edit-mode stability: keep the widget declarative. Avoid full-widget event overlays and avoid manual `Canvas` repaint loops unless there is a specific Plasma 5.27 regression test for right-click/edit-mode behavior.
