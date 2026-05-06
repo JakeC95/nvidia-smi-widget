@@ -7,11 +7,27 @@ Item {
     id: root
 
     readonly property string command: "nvidia-smi --query-gpu=memory.used,memory.total --format=csv,noheader,nounits -i 0"
+    readonly property bool inPanel: [
+        PlasmaCore.Types.TopEdge,
+        PlasmaCore.Types.RightEdge,
+        PlasmaCore.Types.BottomEdge,
+        PlasmaCore.Types.LeftEdge
+    ].indexOf(Plasmoid.location) !== -1
+    readonly property int panelExtent: PlasmaCore.Units.iconSizeHints.panel
     property real percent: 0
     property int usedMiB: 0
     property int totalMiB: 0
     property bool hasReading: false
     property string errorText: ""
+
+    Layout.minimumWidth: PlasmaCore.Units.iconSizes.small
+    Layout.minimumHeight: PlasmaCore.Units.iconSizes.small
+    Layout.preferredWidth: inPanel ? panelExtent : PlasmaCore.Units.gridUnit * 2.4
+    Layout.preferredHeight: inPanel ? panelExtent : PlasmaCore.Units.gridUnit * 2.4
+    Layout.maximumWidth: inPanel ? panelExtent : -1
+    Layout.maximumHeight: inPanel ? panelExtent : -1
+    implicitWidth: Layout.preferredWidth
+    implicitHeight: Layout.preferredHeight
 
     Plasmoid.preferredRepresentation: Plasmoid.compactRepresentation
     Plasmoid.compactRepresentation: monitorRepresentation
@@ -90,20 +106,12 @@ Item {
         Item {
             id: monitor
 
-            readonly property bool inPanel: [
-                PlasmaCore.Types.TopEdge,
-                PlasmaCore.Types.RightEdge,
-                PlasmaCore.Types.BottomEdge,
-                PlasmaCore.Types.LeftEdge
-            ].indexOf(Plasmoid.location) !== -1
-            readonly property int panelExtent: PlasmaCore.Units.iconSizeHints.panel
-
             Layout.minimumWidth: PlasmaCore.Units.iconSizes.small
             Layout.minimumHeight: PlasmaCore.Units.iconSizes.small
-            Layout.preferredWidth: inPanel ? panelExtent : PlasmaCore.Units.gridUnit * 2.4
-            Layout.preferredHeight: inPanel ? panelExtent : PlasmaCore.Units.gridUnit * 2.4
-            Layout.maximumWidth: inPanel ? panelExtent : -1
-            Layout.maximumHeight: inPanel ? panelExtent : -1
+            Layout.preferredWidth: root.inPanel ? root.panelExtent : PlasmaCore.Units.gridUnit * 2.4
+            Layout.preferredHeight: root.inPanel ? root.panelExtent : PlasmaCore.Units.gridUnit * 2.4
+            Layout.maximumWidth: root.inPanel ? root.panelExtent : -1
+            Layout.maximumHeight: root.inPanel ? root.panelExtent : -1
             implicitWidth: Layout.preferredWidth
             implicitHeight: Layout.preferredHeight
 
