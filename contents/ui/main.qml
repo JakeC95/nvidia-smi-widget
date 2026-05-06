@@ -1,25 +1,36 @@
 import QtQuick 2.12
 import QtQuick.Layouts 1.12
 import org.kde.plasma.core 2.0 as PlasmaCore
+import org.kde.plasma.plasmoid 2.0
 
 Item {
     id: root
 
     readonly property string command: "nvidia-smi --query-gpu=memory.used,memory.total --format=csv,noheader,nounits -i 0"
+    readonly property bool inPanel: [
+        PlasmaCore.Types.TopEdge,
+        PlasmaCore.Types.RightEdge,
+        PlasmaCore.Types.BottomEdge,
+        PlasmaCore.Types.LeftEdge
+    ].indexOf(Plasmoid.location) !== -1
+    readonly property int panelExtent: PlasmaCore.Units.iconSizeHints.panel
     property real percent: 0
     property int usedMiB: 0
     property int totalMiB: 0
     property bool hasReading: false
     property string errorText: ""
 
-    Layout.minimumWidth: PlasmaCore.Units.gridUnit * 2
-    Layout.minimumHeight: PlasmaCore.Units.gridUnit * 2
-    Layout.preferredWidth: PlasmaCore.Units.gridUnit * 2.4
-    Layout.preferredHeight: PlasmaCore.Units.gridUnit * 2.4
-    implicitWidth: PlasmaCore.Units.gridUnit * 2.4
-    implicitHeight: PlasmaCore.Units.gridUnit * 2.4
+    Layout.minimumWidth: PlasmaCore.Units.iconSizes.small
+    Layout.minimumHeight: PlasmaCore.Units.iconSizes.small
+    Layout.preferredWidth: inPanel ? panelExtent : PlasmaCore.Units.gridUnit * 2.4
+    Layout.preferredHeight: inPanel ? panelExtent : PlasmaCore.Units.gridUnit * 2.4
+    Layout.maximumWidth: inPanel ? panelExtent : -1
+    Layout.maximumHeight: inPanel ? panelExtent : -1
+    implicitWidth: Layout.preferredWidth
+    implicitHeight: Layout.preferredHeight
 
     Plasmoid.preferredRepresentation: Plasmoid.fullRepresentation
+    Plasmoid.backgroundHints: PlasmaCore.Types.NoBackground
     Plasmoid.toolTipMainText: "NVIDIA VRAM"
     Plasmoid.toolTipSubText: root.tooltipText()
 
@@ -96,6 +107,9 @@ Item {
         anchors.fill: parent
         antialiasing: true
 
+        onWidthChanged: requestPaint()
+        onHeightChanged: requestPaint()
+
         onPaint: {
             var ctx = getContext("2d");
             var size = Math.min(width, height);
@@ -140,5 +154,12 @@ Item {
         elide: Text.ElideRight
         font.pixelSize: Math.max(8, Math.min(parent.width, parent.height) * 0.23)
         font.bold: false
+    }
+
+    PlasmaCore.ToolTipArea {
+        anchors.fill: parent
+        mainText: "NVIDIA VRAM"
+        subText: root.tooltipText()
+        textFormat: Text.PlainText
     }
 }
