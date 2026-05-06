@@ -15,8 +15,7 @@
         "ServiceTypes": [
             "Plasma/Applet"
         ],
-        "Version": "0.1.2",
-        "Website": "https://github.com/JakeC95/nvidia-smi-widget"
+        "Version": "0.1.3"
     },
     "X-Plasma-API": "declarativeappletscript",
     "X-Plasma-MainScript": "ui/main.qml",

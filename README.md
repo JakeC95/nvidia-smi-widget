@@ -1,6 +1,6 @@
 # NVIDIA SMI VRAM Widget
 
-A tiny KDE Plasma 5 widget for Rocky Linux that shows NVIDIA GPU 0 VRAM usage as a circular percentage indicator.
+A tiny KDE Plasma 5 widget that shows NVIDIA GPU 0 VRAM usage as a circular percentage indicator.
 
 It polls:
 
@@ -8,9 +8,9 @@ It polls:
 nvidia-smi --query-gpu=memory.used,memory.total --format=csv,noheader,nounits -i 0
 ```
 
-The center label shows the VRAM percentage. The ring uses NVIDIA green (`#76B900`) so it is visually distinct from Rocky/Plasma's native blue CPU and RAM widgets.
+The center label shows the VRAM percentage. The ring uses NVIDIA green (`#76B900`) so it is visually distinct from the default blue used by many system monitor widgets.
 
-The widget renders the ring with `QtQuick.Shapes` instead of a `Canvas`. This matters on Plasma 5.27: the earlier Canvas-based version could destabilize Plasma edit mode when right-clicking the panel or opening widget rearrange mode. The current Shape-based version has been verified on `ws62` not to crash when entering edit mode.
+The widget renders the ring with `QtQuick.Shapes` instead of a manual canvas repaint loop, which keeps it lightweight and friendly to Plasma's normal panel edit mode.
 
 ## Install
 
@@ -21,6 +21,14 @@ bash scripts/install.sh
 ```
 
 Then add `NVIDIA VRAM` from the Plasma widget picker.
+
+## Configure
+
+Right-click the widget and open its settings to change:
+
+- Ring color, as a hex color such as `#76B900`
+- Poll interval, from 1 second to 3600 seconds
+- Percentage display, either one decimal place or rounded to the nearest whole number
 
 If Plasma does not refresh the widget list immediately:
 
@@ -48,4 +56,3 @@ bash scripts/uninstall.sh
 - Target GPU: GPU 0.
 - Refresh interval: 5 seconds.
 - Runtime dependencies: Plasma 5, `kpackagetool5` for install, and NVIDIA's `nvidia-smi`.
-- Edit-mode stability: keep the widget declarative. Avoid full-widget event overlays and avoid manual `Canvas` repaint loops unless there is a specific Plasma 5.27 regression test for right-click/edit-mode behavior.

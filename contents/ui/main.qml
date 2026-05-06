@@ -7,7 +7,9 @@ import org.kde.plasma.plasmoid 2.0
 Item {
     id: root
 
-    readonly property color accentColor: "#76B900"
+    readonly property string defaultAccentColor: "#76B900"
+    readonly property string configuredAccentColor: /^#[0-9A-Fa-f]{6}$/.test(Plasmoid.configuration.accentColor) ? Plasmoid.configuration.accentColor : defaultAccentColor
+    readonly property int pollIntervalSeconds: Math.max(1, Math.min(3600, parseInt(Plasmoid.configuration.pollIntervalSeconds, 10) || 5))
     readonly property string command: "nvidia-smi --query-gpu=memory.used,memory.total --format=csv,noheader,nounits -i 0"
     readonly property bool inPanel: [
         PlasmaCore.Types.TopEdge,
@@ -42,6 +44,16 @@ Item {
             return errorText.length > 0 ? errorText : "Waiting for nvidia-smi";
         }
         return usedMiB + " MiB / " + totalMiB + " MiB";
+    }
+
+    function percentText() {
+        if (!hasReading) {
+            return "--%";
+        }
+        if (Plasmoid.configuration.roundPercent) {
+            return Math.round(percent) + "%";
+        }
+        return percent.toFixed(1) + "%";
     }
 
     function parseReading(stdout, stderr, exitCode) {
@@ -99,7 +111,7 @@ Item {
 
     Timer {
         id: refreshTimer
-        interval: 5000
+        interval: root.pollIntervalSeconds * 1000
         repeat: true
         running: true
         triggeredOnStart: true
@@ -138,7 +150,7 @@ Item {
 
             ShapePath {
                 fillColor: "transparent"
-                strokeColor: root.accentColor
+                strokeColor: root.configuredAccentColor
                 strokeWidth: ring.stroke
                 capStyle: ShapePath.RoundCap
 
@@ -157,7 +169,7 @@ Item {
     Text {
         anchors.centerIn: parent
         width: parent.width * 0.82
-        text: root.hasReading ? root.percent.toFixed(1) + "%" : "--%"
+        text: root.percentText()
         color: "#f4f7f9"
         horizontalAlignment: Text.AlignHCenter
         verticalAlignment: Text.AlignVCenter
