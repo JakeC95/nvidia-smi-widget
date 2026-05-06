@@ -23,6 +23,9 @@ grep -q '"ExternalScripts"' "$ROOT/metadata.json"
 python3 -m json.tool "$ROOT/metadata.json" >/dev/null
 grep -q "nvidia-smi --query-gpu=memory.used,memory.total" "$ROOT/contents/ui/main.qml"
 grep -q "interval: 5000" "$ROOT/contents/ui/main.qml"
+grep -q "import QtQuick.Shapes" "$ROOT/contents/ui/main.qml"
+grep -q "PathAngleArc" "$ROOT/contents/ui/main.qml"
+! grep -q "Canvas" "$ROOT/contents/ui/main.qml"
 
 if command -v nvidia-smi >/dev/null 2>&1; then
     nvidia-smi --query-gpu=memory.used,memory.total --format=csv,noheader,nounits -i 0 >/dev/null
